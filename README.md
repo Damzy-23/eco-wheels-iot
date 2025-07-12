@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Eco-Wheels IoT e-Bike Monitoring System
 
 A comprehensive IoT system for monitoring the status and location of e-Bikes using simulated hardware abstraction and UDP networking.
@@ -201,3 +202,6 @@ This project is part of an educational IoT system development course.
 ## Contributing
 
 This is an educational project. For questions or issues, please refer to the course documentation. 
+=======
+# eco-wheels-iot
+>>>>>>> af03f7af3ceaeec9b6be86cc86086052a8db6db3
