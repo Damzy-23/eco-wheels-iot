@@ -1,0 +1,47 @@
+{
+  "test_cases": [
+    {
+      "name": "valid_gps_reading",
+      "input": {
+        "latitude": 40.7128,
+        "longitude": -74.0060,
+        "timestamp": "2024-01-15 14:30:00"
+      },
+      "expected_output": {
+        "json_format": "{\"latitude\": 40.712800, \"longitude\": -74.006000, \"timestamp\": \"2024-01-15 14:30:00\"}",
+        "csv_format": "2024-01-15 14:30:00,40.712800,-74.006000,1"
+      }
+    },
+    {
+      "name": "edge_case_coordinates",
+      "input": {
+        "latitude": 90.0,
+        "longitude": 180.0,
+        "timestamp": "2024-01-15 15:45:30"
+      },
+      "expected_output": {
+        "json_format": "{\"latitude\": 90.000000, \"longitude\": 180.000000, \"timestamp\": \"2024-01-15 15:45:30\"}",
+        "csv_format": "2024-01-15 15:45:30,90.000000,180.000000,1"
+      }
+    },
+    {
+      "name": "negative_coordinates",
+      "input": {
+        "latitude": -33.8688,
+        "longitude": 151.2093,
+        "timestamp": "2024-01-15 16:20:15"
+      },
+      "expected_output": {
+        "json_format": "{\"latitude\": -33.868800, \"longitude\": 151.209300, \"timestamp\": \"2024-01-15 16:20:15\"}",
+        "csv_format": "2024-01-15 16:20:15,-33.868800,151.209300,1"
+      }
+    }
+  ],
+  "validation_rules": {
+    "latitude_range": [-90.0, 90.0],
+    "longitude_range": [-180.0, 180.0],
+    "timestamp_format": "YYYY-MM-DD HH:MM:SS",
+    "json_precision": 6,
+    "required_fields": ["latitude", "longitude", "timestamp"]
+  }
+} 

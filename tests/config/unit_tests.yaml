@@ -1,0 +1,84 @@
+# Unit Test Configuration for Eco-Wheels IoT e-Bike Monitoring System
+
+# Test Framework Settings
+framework:
+  name: "Catch2"
+  version: "2.x"
+  output_format: "console"
+  verbosity: "normal"
+
+# Test Categories
+categories:
+  - name: "gps-sensor"
+    description: "GPS Sensor functionality tests"
+    tags: ["sensor", "gps", "location"]
+    
+  - name: "ebike-client"
+    description: "e-Bike client functionality tests"
+    tags: ["client", "hal", "simulation"]
+    
+  - name: "misc-utils"
+    description: "Miscellaneous utility function tests"
+    tags: ["utils", "json", "validation"]
+
+# Test Execution Settings
+execution:
+  parallel: false
+  timeout: 30  # seconds
+  abort_on_failure: false
+  show_duration: true
+  show_success: true
+
+# Output Settings
+output:
+  console:
+    use_colors: true
+    verbosity: "normal"
+  file:
+    enabled: false
+    path: "test_results.xml"
+    format: "junit"
+
+# Test Data
+test_data:
+  gps_coordinates:
+    - latitude: 40.7128
+      longitude: -74.0060
+      description: "New York City"
+    - latitude: 51.5074
+      longitude: -0.1278
+      description: "London"
+    - latitude: -33.8688
+      longitude: 151.2093
+      description: "Sydney"
+  
+  port_numbers:
+    valid: [1, 8080, 65535]
+    invalid: [0, -1, 65536]
+  
+  json_samples:
+    - input: {"key": "test", "value": "value"}
+      expected: "{\"test\":\"value\"}"
+    - input: {"key": "empty", "value": ""}
+      expected: "{\"empty\":\"\"}"
+
+# Validation Rules
+validation:
+  gps:
+    latitude_range: [-90.0, 90.0]
+    longitude_range: [-180.0, 180.0]
+    precision: 6
+  
+  hal:
+    port_range: [1, 65535]
+    max_retry_attempts: 3
+  
+  json:
+    required_fields: ["latitude", "longitude", "timestamp"]
+    format: "compact"
+
+# Performance Benchmarks
+benchmarks:
+  gps_update_frequency: 1000  # updates per second
+  json_generation_time: 0.001  # seconds
+  hal_attach_time: 0.01  # seconds 

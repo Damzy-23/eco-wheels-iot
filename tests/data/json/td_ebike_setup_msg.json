@@ -1,0 +1,98 @@
+{
+  "setup_messages": [
+    {
+      "name": "basic_setup",
+      "message_type": "SETUP",
+      "bike_id": 1,
+      "configuration": {
+        "gps_update_interval": 5,
+        "battery_threshold": 20,
+        "maintenance_interval": 7200,
+        "emergency_contact": "support@eco-wheels.com"
+      },
+      "expected_response": "SETUP_ACK",
+      "description": "Basic bike setup configuration"
+    },
+    {
+      "name": "advanced_setup",
+      "message_type": "SETUP",
+      "bike_id": 2,
+      "configuration": {
+        "gps_update_interval": 3,
+        "battery_threshold": 15,
+        "maintenance_interval": 3600,
+        "emergency_contact": "emergency@eco-wheels.com",
+        "geofencing": {
+          "enabled": true,
+          "boundaries": [
+            {"lat": 40.7, "lng": -74.0},
+            {"lat": 40.8, "lng": -73.9}
+          ]
+        },
+        "sensors": {
+          "temperature": true,
+          "humidity": true,
+          "vibration": true
+        }
+      },
+      "expected_response": "SETUP_ACK",
+      "description": "Advanced setup with geofencing and sensors"
+    },
+    {
+      "name": "minimal_setup",
+      "message_type": "SETUP",
+      "bike_id": 3,
+      "configuration": {
+        "gps_update_interval": 10,
+        "battery_threshold": 10
+      },
+      "expected_response": "SETUP_ACK",
+      "description": "Minimal setup configuration"
+    }
+  ],
+  "configuration_parameters": {
+    "gps_update_interval": {
+      "type": "integer",
+      "range": [1, 60],
+      "unit": "seconds",
+      "default": 5,
+      "description": "Interval between GPS location updates"
+    },
+    "battery_threshold": {
+      "type": "integer",
+      "range": [5, 50],
+      "unit": "percent",
+      "default": 20,
+      "description": "Battery level threshold for low battery warning"
+    },
+    "maintenance_interval": {
+      "type": "integer",
+      "range": [1800, 86400],
+      "unit": "seconds",
+      "default": 7200,
+      "description": "Interval between maintenance checks"
+    },
+    "emergency_contact": {
+      "type": "string",
+      "format": "email",
+      "default": "support@eco-wheels.com",
+      "description": "Emergency contact email address"
+    },
+    "geofencing": {
+      "type": "object",
+      "optional": true,
+      "description": "Geofencing configuration"
+    },
+    "sensors": {
+      "type": "object",
+      "optional": true,
+      "description": "Sensor configuration"
+    }
+  },
+  "response_codes": {
+    "SETUP_SUCCESS": 200,
+    "INVALID_CONFIG": 400,
+    "BIKE_NOT_FOUND": 404,
+    "SETUP_FAILED": 500
+  }
+} 

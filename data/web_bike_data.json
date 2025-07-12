@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-07-12 15:11:43",
+  "active_bikes": 1,
+  "bikes": [
+    {
+      "id": "1",
+      "data": {"latitude": 40.715090,"longitude": -74.007257,"timestamp": "2025-07-12 15:11:43"}
+    }
+  ]
+}

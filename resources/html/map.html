@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Wheels e-Bike Map</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        
+        .header {
+            background-color: #2c5530;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .map-container {
+            flex: 2;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .map {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #e8f5e8, #d4edda);
+            border: 2px solid #2c5530;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bike-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #dc3545;
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bike-marker:hover {
+            background-color: #c82333;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        
+        .bike-info {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 12px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .status-panel {
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .status-label {
+            font-weight: bold;
+            color: #2c5530;
+        }
+        
+        .status-value {
+            color: #666;
+        }
+        
+        .controls {
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #2c5530;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: #1e3a23;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚲 Eco-Wheels e-Bike Monitoring System</h1>
+        <p>Real-time location tracking and maintenance management</p>
+    </div>
+    
+    <div class="container">
+        <div class="map-container">
+            <h2>Live Map</h2>
+            <div class="map" id="map">
+                <!-- Bike markers will be added here dynamically -->
+            </div>
+            
+            <div class="controls">
+                <button onclick="refreshMap()">🔄 Refresh</button>
+                <button onclick="clearMap()">🗑️ Clear</button>
+                <button onclick="toggleAutoRefresh()">⏸️ Auto Refresh</button>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="status-panel">
+                <h3>System Status</h3>
+                <div class="status-item">
+                    <span class="status-label">Active Bikes:</span>
+                    <span class="status-value" id="active-bikes">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Last Update:</span>
+                    <span class="status-value" id="last-update">Never</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Server Status:</span>
+                    <span class="status-value" id="server-status">Offline</span>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <h4>Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #dc3545;"></div>
+                    <span>e-Bike Location</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #28a745;"></div>
+                    <span>Available</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ffc107;"></div>
+                    <span>In Use</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #6c757d;"></div>
+                    <span>Maintenance</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let autoRefresh = true;
+        let refreshInterval;
+        
+        // Real-time bike data from server
+        let bikeData = [];
+        
+        // Function to load real-time data from server
+        function loadBikeData() {
+            fetch('../data/web_bike_data.json')
+                .then(response => response.json())
+                .then(data => {
+                    bikeData = data.bikes || [];
+                    updateMap();
+                    updateStatus(data);
+                })
+                .catch(error => {
+                    console.log('Using sample data (server not running)');
+                    // Fallback to sample data if server is not running
+                    bikeData = [
+                        { id: 1, data: '{"latitude": 40.7128, "longitude": -74.0060, "timestamp": "2025-07-12 14:30:00"}' },
+                        { id: 2, data: '{"latitude": 40.7589, "longitude": -73.9851, "timestamp": "2025-07-12 14:30:00"}' },
+                        { id: 3, data: '{"latitude": 40.7505, "longitude": -73.9934, "timestamp": "2025-07-12 14:30:00"}' },
+                        { id: 4, data: '{"latitude": 40.7829, "longitude": -73.9654, "timestamp": "2025-07-12 14:30:00"}' }
+                    ];
+                    updateMap();
+                });
+        }
+        
+        function initMap() {
+            const map = document.getElementById('map');
+            
+            // Load real-time data
+            loadBikeData();
+        }
+        
+        function updateMap() {
+            const map = document.getElementById('map');
+            
+            // Clear existing markers
+            const existingMarkers = map.querySelectorAll('.bike-marker');
+            existingMarkers.forEach(marker => marker.remove());
+            
+            // Add new markers
+            bikeData.forEach(bike => {
+                addBikeMarker(bike);
+            });
+        }
+        
+        function addBikeMarker(bike) {
+            const map = document.getElementById('map');
+            const marker = document.createElement('div');
+            marker.className = 'bike-marker';
+            marker.id = `bike-${bike.id}`;
+            
+            // Parse GPS data
+            let gpsData;
+            try {
+                gpsData = JSON.parse(bike.data);
+            } catch (e) {
+                console.error('Invalid GPS data for bike', bike.id);
+                return;
+            }
+            
+            // Position marker (simplified positioning)
+            const x = ((gpsData.longitude + 74.1) / 0.2) * 100; // Scale to map width
+            const y = ((40.8 - gpsData.latitude) / 0.2) * 100; // Scale to map height
+            
+            marker.style.left = `${x}%`;
+            marker.style.top = `${y}%`;
+            
+            // Add click event for info
+            marker.addEventListener('click', () => showBikeInfo(bike, marker));
+            
+            map.appendChild(marker);
+        }
+        
+        function showBikeInfo(bike, marker) {
+            // Remove existing info
+            const existingInfo = document.querySelector('.bike-info');
+            if (existingInfo) {
+                existingInfo.remove();
+            }
+            
+            // Parse GPS data
+            let gpsData;
+            try {
+                gpsData = JSON.parse(bike.data);
+            } catch (e) {
+                console.error('Invalid GPS data for bike', bike.id);
+                return;
+            }
+            
+            const info = document.createElement('div');
+            info.className = 'bike-info';
+            info.innerHTML = `
+                <strong>Bike ${bike.id}</strong><br>
+                Lat: ${gpsData.latitude.toFixed(4)}<br>
+                Lng: ${gpsData.longitude.toFixed(4)}<br>
+                Time: ${gpsData.timestamp}
+            `;
+            
+            const rect = marker.getBoundingClientRect();
+            info.style.left = `${rect.right + 10}px`;
+            info.style.top = `${rect.top}px`;
+            info.style.display = 'block';
+            
+            document.body.appendChild(info);
+            
+            // Hide info after 3 seconds
+            setTimeout(() => {
+                if (info.parentNode) {
+                    info.remove();
+                }
+            }, 3000);
+        }
+        
+        function updateStatus(data) {
+            document.getElementById('active-bikes').textContent = data.active_bikes || bikeData.length;
+            document.getElementById('last-update').textContent = data.timestamp || new Date().toLocaleTimeString();
+            document.getElementById('server-status').textContent = 'Online';
+        }
+        
+        function refreshMap() {
+            // Load real-time data
+            loadBikeData();
+            console.log('Map refreshed at', new Date().toLocaleTimeString());
+        }
+        
+        function clearMap() {
+            const map = document.getElementById('map');
+            const markers = map.querySelectorAll('.bike-marker');
+            markers.forEach(marker => marker.remove());
+            
+            const info = document.querySelector('.bike-info');
+            if (info) info.remove();
+        }
+        
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const button = event.target;
+            
+            if (autoRefresh) {
+                button.textContent = '⏸️ Auto Refresh';
+                refreshInterval = setInterval(refreshMap, 5000);
+            } else {
+                button.textContent = '▶️ Auto Refresh';
+                clearInterval(refreshInterval);
+            }
+        }
+        
+        // Initialize map when page loads
+        window.addEventListener('load', () => {
+            initMap();
+            if (autoRefresh) {
+                refreshInterval = setInterval(refreshMap, 5000);
+            }
+        });
+        
+        // Clean up interval when page unloads
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,44 @@
+# Server Configuration for Eco-Wheels e-Bike Monitoring System
+
+# Network Settings
+network:
+  host: "0.0.0.0"  # Listen on all interfaces
+  port: 8080
+  max_clients: 100
+  buffer_size: 1024
+  timeout: 30000  # milliseconds
+
+# Gateway Settings
+gateway:
+  enable_udp: true
+  enable_tcp: false
+  broadcast_interval: 10  # seconds
+  client_timeout: 60  # seconds
+
+# Data Management
+data:
+  storage_directory: "data/"
+  backup_interval: 3600  # seconds (1 hour)
+  max_file_size: 10485760  # 10MB
+  compression: false
+
+# Web Interface
+web:
+  enabled: true
+  port: 8081
+  static_files: "resources/html/"
+  map_update_interval: 5  # seconds
+
+# Maintenance Management
+maintenance:
+  enable_protocols: ["BASIC", "ENHANCED"]
+  command_timeout: 10000  # milliseconds
+  ack_required: true
+  retry_attempts: 3
+
+# Logging
+logging:
+  level: "INFO"
+  file: "logs/gateway.log"
+  max_file_size: 5242880  # 5MB
+  max_files: 5 

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Generate e-Bike data file utility
+# Usage: ./generateEBikeFile <bike_id> [duration] [interval]
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <bike_id> [duration] [interval]"
+    echo "Example: $0 1 60 5"
+    exit 1
+fi
+
+BIKE_ID=$1
+DURATION=${2:-60}  # Default 60 seconds
+INTERVAL=${3:-5}   # Default 5 seconds
+
+OUTPUT_FILE="data/sim-eBike-${BIKE_ID}.csv"
+
+# Create data directory if it doesn't exist
+mkdir -p data
+
+# Write CSV header
+echo "timestamp,latitude,longitude,bike_id" > "$OUTPUT_FILE"
+
+echo "Generating e-Bike data for Bike $BIKE_ID"
+echo "Duration: $DURATION seconds, Interval: $INTERVAL seconds"
+echo "Output file: $OUTPUT_FILE"
+
+# Generate sample data
+for ((i=0; i<DURATION; i+=INTERVAL)); do
+    # Generate timestamp
+    TIMESTAMP=$(date -d "@$(( $(date +%s) + i ))" "+%Y-%m-%d %H:%M:%S")
+    
+    # Generate random coordinates around NYC (40.7128, -74.0060)
+    LAT=$(echo "40.7128 + ($RANDOM - 16384) / 1638400" | bc -l)
+    LON=$(echo "-74.0060 + ($RANDOM - 16384) / 1638400" | bc -l)
+    
+    # Format coordinates to 6 decimal places
+    LAT_FORMATTED=$(printf "%.6f" $LAT)
+    LON_FORMATTED=$(printf "%.6f" $LON)
+    
+    echo "$TIMESTAMP,$LAT_FORMATTED,$LON_FORMATTED,$BIKE_ID" >> "$OUTPUT_FILE"
+done
+
+echo "Generated $(($DURATION / $INTERVAL)) data points"
+echo "Data file created: $OUTPUT_FILE" 

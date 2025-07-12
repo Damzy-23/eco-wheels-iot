@@ -1,0 +1,35 @@
+# Client Configuration for Eco-Wheels e-Bike Monitoring System
+
+# Network Settings
+network:
+  server_host: "127.0.0.1"
+  server_port: 8080
+  client_port: 8081
+  timeout: 5000  # milliseconds
+
+# GPS Sensor Settings
+gps:
+  update_interval: 5  # seconds
+  variation_radius: 0.01  # degrees (~1km)
+  default_latitude: 40.7128  # NYC latitude
+  default_longitude: -74.0060  # NYC longitude
+
+# Data Logging
+logging:
+  csv_output: true
+  json_output: true
+  log_level: "INFO"
+  data_directory: "data/"
+
+# HAL (Hardware Abstraction Layer) Settings
+hal:
+  port: 8080
+  auto_attach: true
+  retry_attempts: 3
+  retry_delay: 1000  # milliseconds
+
+# Simulation Settings
+simulation:
+  default_duration: 60  # seconds
+  default_interval: 5   # seconds
+  max_bikes: 4 

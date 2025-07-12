@@ -1,0 +1,116 @@
+{
+  "json_generation_tests": [
+    {
+      "name": "simple_key_value",
+      "input": {
+        "key": "test",
+        "value": "value"
+      },
+      "expected_output": "{\"test\":\"value\"}",
+      "description": "Simple key-value pair JSON generation"
+    },
+    {
+      "name": "empty_value",
+      "input": {
+        "key": "empty",
+        "value": ""
+      },
+      "expected_output": "{\"empty\":\"\"}",
+      "description": "JSON with empty string value"
+    },
+    {
+      "name": "special_characters",
+      "input": {
+        "key": "message",
+        "value": "Hello, \"World\"!"
+      },
+      "expected_output": "{\"message\":\"Hello, \\\"World\\\"!\"}",
+      "description": "JSON with special characters and quotes"
+    },
+    {
+      "name": "numeric_value",
+      "input": {
+        "key": "count",
+        "value": "42"
+      },
+      "expected_output": "{\"count\":\"42\"}",
+      "description": "JSON with numeric string value"
+    },
+    {
+      "name": "unicode_characters",
+      "input": {
+        "key": "emoji",
+        "value": "🚲"
+      },
+      "expected_output": "{\"emoji\":\"🚲\"}",
+      "description": "JSON with Unicode emoji characters"
+    }
+  ],
+  "string_splitting_tests": [
+    {
+      "name": "comma_separated",
+      "input": {
+        "string": "a,b,c",
+        "delimiter": ","
+      },
+      "expected_output": ["a", "b", "c"],
+      "description": "Split string on comma delimiter"
+    },
+    {
+      "name": "empty_string",
+      "input": {
+        "string": "",
+        "delimiter": ","
+      },
+      "expected_output": [""],
+      "description": "Split empty string"
+    },
+    {
+      "name": "no_delimiter",
+      "input": {
+        "string": "hello",
+        "delimiter": ","
+      },
+      "expected_output": ["hello"],
+      "description": "String without delimiter"
+    },
+    {
+      "name": "multiple_delimiters",
+      "input": {
+        "string": "a,,b,c",
+        "delimiter": ","
+      },
+      "expected_output": ["a", "", "b", "c"],
+      "description": "String with consecutive delimiters"
+    }
+  ],
+  "port_validation_tests": [
+    {
+      "name": "valid_ports",
+      "input": [1, 8080, 65535],
+      "expected_output": true,
+      "description": "Valid port numbers"
+    },
+    {
+      "name": "invalid_ports",
+      "input": [0, -1, 65536, 99999],
+      "expected_output": false,
+      "description": "Invalid port numbers"
+    }
+  ],
+  "validation_rules": {
+    "json_format": {
+      "required_fields": ["key", "value"],
+      "key_type": "string",
+      "value_type": "string"
+    },
+    "port_range": {
+      "min": 1,
+      "max": 65535
+    },
+    "string_splitting": {
+      "delimiter_type": "char",
+      "return_type": "vector<string>"
+    }
+  }
+} 

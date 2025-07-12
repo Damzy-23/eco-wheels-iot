@@ -1,0 +1,324 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-all",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/sensor/GPSSensor.cpp",
+                "-o",
+                "build/GPSSensor.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-ebike-client",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/ebikeClient.cpp",
+                "-o",
+                "build/ebikeClient.o"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "link-ebike-client",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "build/ebikeClient.o",
+                "build/GPSSensor.o",
+                "build/MessageHandler.o",
+                "build/SocketServer.o",
+                "-o",
+                "bin/ebikeClient.exe",
+                "-lws2_32"
+            ],
+            "group": "build",
+            "dependsOn": ["build-ebike-client", "build-gps-sensor", "build-message-handler", "build-socket-server"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-gps-sensor",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/sensor/GPSSensor.cpp",
+                "-o",
+                "build/GPSSensor.o"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-message-handler",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/comm/MessageHandler.cpp",
+                "-o",
+                "build/MessageHandler.o"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-socket-server",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/comm/SocketServer.cpp",
+                "-o",
+                "build/SocketServer.o"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "run-ebike-client",
+            "type": "shell",
+            "command": "./bin/ebikeClient.exe",
+            "args": ["1", "30", "5"],
+            "group": "test",
+            "dependsOn": ["link-ebike-client"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "build-ebike-gateway",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/ebikeGateway.cpp",
+                "-o",
+                "build/ebikeGateway.o"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "link-ebike-gateway",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "build/ebikeGateway.o",
+                "build/MessageHandler.o",
+                "build/SocketServer.o",
+                "-o",
+                "bin/ebikeGateway.exe",
+                "-lws2_32"
+            ],
+            "group": "build",
+            "dependsOn": ["build-ebike-gateway", "build-message-handler", "build-socket-server"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "run-ebike-gateway",
+            "type": "shell",
+            "command": "./bin/ebikeGateway.exe",
+            "args": ["8080"],
+            "group": "test",
+            "dependsOn": ["link-ebike-gateway"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "build-management-client",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "-Isrc",
+                "-Isrc/sensor",
+                "-Isrc/comm",
+                "-c",
+                "src/managementClient.cpp",
+                "-o",
+                "build/managementClient.o"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "link-management-client",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "build/managementClient.o",
+                "build/MessageHandler.o",
+                "build/SocketServer.o",
+                "-o",
+                "bin/managementClient.exe",
+                "-lws2_32"
+            ],
+            "group": "build",
+            "dependsOn": ["build-management-client", "build-message-handler", "build-socket-server"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "run-management-client",
+            "type": "shell",
+            "command": "./bin/managementClient.exe",
+            "args": [],
+            "group": "test",
+            "dependsOn": ["link-management-client"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "Remove-Item",
+            "args": ["-Recurse", "-Force", "build", "bin"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        }
+    ]
+} 

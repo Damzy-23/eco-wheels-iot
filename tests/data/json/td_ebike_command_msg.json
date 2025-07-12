@@ -1,0 +1,83 @@
+{
+  "command_messages": [
+    {
+      "name": "basic_command",
+      "message_type": "COMMAND",
+      "bike_id": 1,
+      "command": "STATUS_CHECK",
+      "parameters": {},
+      "expected_response": "COMMACK",
+      "description": "Basic status check command"
+    },
+    {
+      "name": "maintenance_command",
+      "message_type": "COMMAND",
+      "bike_id": 2,
+      "command": "MAINTENANCE_MODE",
+      "parameters": {
+        "mode": "SCHEDULED",
+        "duration": 3600,
+        "reason": "Regular maintenance"
+      },
+      "expected_response": "COMMACK",
+      "description": "Put bike in maintenance mode"
+    },
+    {
+      "name": "emergency_stop",
+      "message_type": "COMMAND",
+      "bike_id": 3,
+      "command": "EMERGENCY_STOP",
+      "parameters": {
+        "reason": "Safety concern",
+        "location": "40.7128,-74.0060"
+      },
+      "expected_response": "COMMACK",
+      "description": "Emergency stop command"
+    },
+    {
+      "name": "battery_check",
+      "message_type": "COMMAND",
+      "bike_id": 4,
+      "command": "BATTERY_STATUS",
+      "parameters": {
+        "detailed": true
+      },
+      "expected_response": "COMMACK",
+      "description": "Detailed battery status check"
+    }
+  ],
+  "command_types": {
+    "STATUS_CHECK": {
+      "description": "Request current bike status",
+      "parameters": [],
+      "response_format": "JSON"
+    },
+    "MAINTENANCE_MODE": {
+      "description": "Enable/disable maintenance mode",
+      "parameters": ["mode", "duration", "reason"],
+      "response_format": "JSON"
+    },
+    "EMERGENCY_STOP": {
+      "description": "Emergency stop command",
+      "parameters": ["reason", "location"],
+      "response_format": "JSON"
+    },
+    "BATTERY_STATUS": {
+      "description": "Check battery status",
+      "parameters": ["detailed"],
+      "response_format": "JSON"
+    },
+    "LOCATION_UPDATE": {
+      "description": "Request location update",
+      "parameters": [],
+      "response_format": "JSON"
+    }
+  },
+  "response_codes": {
+    "SUCCESS": 200,
+    "INVALID_COMMAND": 400,
+    "BIKE_NOT_FOUND": 404,
+    "MAINTENANCE_MODE": 503,
+    "EMERGENCY_STOP": 500
+  }
+} 
